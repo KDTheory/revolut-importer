@@ -27,12 +27,18 @@ from firefly_revolut_transactions import FireflyRevolutClient
     help='Id of Revolut account in FireflyIII',
 )
 @click.option(
+    '--vault-id', '-v',
+    envvar="REVOLUT_VAULT",
+    type=str,
+    help='Id of Revolut vault in FireflyIII',
+)
+@click.option(
     '--firefly-url', '-u',
     envvar="FIREFLY_URL",
     type=str,
     help='URL to FireflyIII instance including trailing slash "/"',
 )
-def main(revolut_token, firefly_token, account_id, firefly_url):
+def main(revolut_token, firefly_token, account_id, vault_id, firefly_url):
     if revolut_token is None:
         print("You don't have a Revolut token. Use 'revolut_cli' to obtain one")
         sys.exit()
@@ -46,7 +52,7 @@ def main(revolut_token, firefly_token, account_id, firefly_url):
         print("You don't have FireflyIII instance URL")
         sys.exit()
 
-    client = FireflyRevolutClient(revolut_token, firefly_token, account_id, firefly_url)
+    client = FireflyRevolutClient(revolut_token, firefly_token, account_id, firefly_url, vault_id)
     client.process()
 
 
