@@ -12,19 +12,19 @@ from firefly_revolut_transactions import FireflyRevolutClient
     '--revolut-token', '-r',
     envvar="REVOLUT_TOKEN",
     type=str,
-    help='Revolut token',
+    help='Revolut token (required)',
 )
 @click.option(
     '--firefly-token', '-f',
     envvar="FIREFLY_TOKEN",
     type=str,
-    help='Firefly token',
+    help='Firefly token (required)',
 )
 @click.option(
     '--account-id', '-a',
     envvar="REVOLUT_ACCOUNT",
     type=str,
-    help='Id of Revolut account in FireflyIII',
+    help='Id of Revolut account in FireflyIII (required)',
 )
 @click.option(
     '--vault-id', '-v',
@@ -42,7 +42,7 @@ from firefly_revolut_transactions import FireflyRevolutClient
     '--firefly-url', '-u',
     envvar="FIREFLY_URL",
     type=str,
-    help='URL to FireflyIII instance including trailing slash "/"',
+    help='URL to FireflyIII instance including trailing slash "/" (required)',
 )
 def main(revolut_token, firefly_token, account_id, vault_id, topup_id, firefly_url):
     if revolut_token is None:

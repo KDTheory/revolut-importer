@@ -12,11 +12,13 @@ and is updated on subsequent runs to avoid duplicating of transactions.
 Usage: firefly_revolut_cli.py [OPTIONS]
 
 Options:
-  -r, --revolut-token TEXT  Revolut token
-  -f, --firefly-token TEXT  Firefly token
-  -a, --account-id TEXT     Id of Revolut account in FireflyIII
+  -r, --revolut-token TEXT  Revolut token (required)
+  -f, --firefly-token TEXT  Firefly token (required)
+  -a, --account-id TEXT     Id of Revolut account in FireflyIII (required)
+  -v, --vault-id TEXT       Id of Revolut vault in FireflyIII
+  -t, --topup-id TEXT       Id of topup account in FireflyIII
   -u, --firefly-url TEXT    URL to FireflyIII instance including trailing
-                            slash "/"
+                            slash "/" (required)
   --help                    Show this message and exit.
 ```
 
