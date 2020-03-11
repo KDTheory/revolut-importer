@@ -3,6 +3,10 @@
 Automatic import of Revolut transactions into FireflyIII personal finance manager, 
 made with use of [revolut-python](https://github.com/tducret/revolut-python).
 
+## Install dependencies
+
+```pip install -r requirements.txt```
+
 ## Usage
 During the first run it gets hash of last transaction, without any import into FireflyIII, 
 which is stored in user's cache folder. This transaction is later used as a base from which it will start importing,
@@ -17,6 +21,7 @@ Options:
   -a, --account-id TEXT     Id of Revolut account in FireflyIII (required)
   -v, --vault-id TEXT       Id of Revolut vault in FireflyIII
   -t, --topup-id TEXT       Id of topup account in FireflyIII
+  -w, --wallet-id TEXT      Id of wallet account in FireflyIII
   -u, --firefly-url TEXT    URL to FireflyIII instance including trailing
                             slash "/" (required)
   --help                    Show this message and exit.
