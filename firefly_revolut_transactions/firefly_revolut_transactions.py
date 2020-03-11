@@ -80,7 +80,7 @@ class FireflyTransaction:
 
         return file.readline()
 
-    def get_json(self, account_id, vault_id, topup_id):
+    def get_json(self, account_id, vault_id, topup_id, wallet_id):
         if self.transaction_type == 'deposit' or (self.transaction_type == 'transfer' and self.amount > 0) \
                 or (self.is_vault and self.opposite_account == 'To ' + self.currency):
             target_account_key = 'destination_id'
@@ -109,6 +109,12 @@ class FireflyTransaction:
 
             source_account_key = 'source_id'
             source_account_val = topup_id
+        elif self.transaction_type == 'transfer' and self.amount < 0:
+            if wallet_id is None:
+                raise Exception('Missing wallet account id')
+
+            target_account_key = 'destination_id'
+            target_account_val = wallet_id
 
         return {
             'description': self.category,
@@ -123,10 +129,11 @@ class FireflyTransaction:
 
 
 class FireflyTransactions:
-    def __init__(self, account_transactions, firefly_token, account_id, vault_id, topup_id, firefly_url):
+    def __init__(self, account_transactions, firefly_token, account_id, vault_id, topup_id, wallet_id, firefly_url):
         self.account_id = account_id
         self.vault_id = vault_id
         self.topup_id = topup_id
+        self.wallet_id = wallet_id
         self.headers = {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -162,7 +169,7 @@ class FireflyTransactions:
 
         for transaction in self.list:
             if process_state:
-                payload = transaction.get_json(self.account_id, self.vault_id, self.topup_id)
+                payload = transaction.get_json(self.account_id, self.vault_id, self.topup_id, self.wallet_id)
                 self.push_transaction(payload)
                 last_transaction = transaction
             elif transaction.get_hash() == last_trans_hash:
@@ -184,12 +191,13 @@ class FireflyTransactions:
 
 
 class FireflyRevolutClient(Revolut):
-    def __init__(self, revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id):
+    def __init__(self, revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id, wallet_id):
         super().__init__(token=revolut_token, device_id=_CLI_DEVICE_ID)
         self.firefly_token = firefly_token
         self.account_id = account_id
         self.vault_id = vault_id
         self.topup_id = topup_id
+        self.wallet_id = wallet_id
         self.firefly_url = firefly_url
 
     def get_account_transactions(self, from_date=(datetime.now() - timedelta(14))):
@@ -201,7 +209,7 @@ class FireflyRevolutClient(Revolut):
         ret = self.client._get(path)
         raw_transactions = json.loads(ret.text)
         transactions = FireflyTransactions(raw_transactions, self.firefly_token, self.account_id, self.vault_id,
-                                           self.topup_id, self.firefly_url)
+                                           self.topup_id, self.wallet_id, self.firefly_url)
         return transactions
 
     def process(self):
