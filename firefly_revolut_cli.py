@@ -45,12 +45,18 @@ from firefly_revolut_transactions import FireflyRevolutClient
     help='Id of wallet account in FireflyIII',
 )
 @click.option(
+    '--currency', '-c',
+    envvar="CURRENCY",
+    type=str,
+    help='Currency of transactions to process',
+)
+@click.option(
     '--firefly-url', '-u',
     envvar="FIREFLY_URL",
     type=str,
     help='URL to FireflyIII instance including trailing slash "/" (required)',
 )
-def main(revolut_token, firefly_token, account_id, vault_id, topup_id, wallet_id, firefly_url):
+def main(revolut_token, firefly_token, account_id, vault_id, topup_id, wallet_id, currency, firefly_url):
     if revolut_token is None:
         print("You don't have a Revolut token. Use 'revolut_cli' to obtain one")
         sys.exit()
@@ -64,7 +70,7 @@ def main(revolut_token, firefly_token, account_id, vault_id, topup_id, wallet_id
         print("You don't have FireflyIII instance URL")
         sys.exit()
 
-    client = FireflyRevolutClient(revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id, wallet_id)
+    client = FireflyRevolutClient(revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id, wallet_id, currency)
     client.process()
 
 

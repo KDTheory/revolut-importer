@@ -22,6 +22,7 @@ Options:
   -v, --vault-id TEXT       Id of Revolut vault in FireflyIII
   -t, --topup-id TEXT       Id of topup account in FireflyIII
   -w, --wallet-id TEXT      Id of wallet account in FireflyIII
+  -c, --currency TEXT       Currency of transactions to process
   -u, --firefly-url TEXT    URL to FireflyIII instance including trailing
                             slash "/" (required)
   --help                    Show this message and exit.
