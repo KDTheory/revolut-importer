@@ -1,4 +1,3 @@
-import hashlib
 import json
 import os
 from datetime import datetime, timedelta
@@ -18,16 +17,18 @@ _TRANSACTIONS_ENDPOINT = 'api/v1/transactions'
 
 class FireflyTransaction:
     def __init__(
-            self,
-            transaction_type,
-            date,
-            description,
-            merchant,
-            amount,
-            category,
-            is_vault,
-            currency
+        self,
+        leg_id,
+        transaction_type,
+        date,
+        description,
+        merchant,
+        amount,
+        category,
+        is_vault,
+        currency
     ):
+        self.leg_id = leg_id
         self.transaction_type = self.extract_type(transaction_type, amount)
         self.date = self.extract_date(date)
         self.opposite_account = self.extract_opposite_acount(merchant, description)
@@ -36,15 +37,11 @@ class FireflyTransaction:
         self.is_vault = is_vault
         self.currency = currency
 
-    def get_hash(self):
-        line = self.transaction_type + self.date + self.opposite_account + str(self.amount)
-        return hashlib.sha1(line.encode('UTF-8')).hexdigest()
-
-    def write_transaction_hash(self):
+    def write_transaction_leg_id(self):
         cachedir = user_cache_dir(_CACHE_DIR)
         Path(cachedir).mkdir(parents=True, exist_ok=True)
         file = Path(os.path.join(cachedir, _CACHE_FILE)).open(mode='w')
-        file.write(self.get_hash())
+        file.write(self.leg_id)
 
     @staticmethod
     def extract_date(date, date_format=_DATE_FORMAT):
@@ -70,7 +67,7 @@ class FireflyTransaction:
             return description
 
     @staticmethod
-    def get_last_transaction_hash():
+    def get_last_transaction_leg_id():
         cachedir = user_cache_dir('revolut')
         Path(cachedir).mkdir(parents=True, exist_ok=True)
         try:
@@ -144,11 +141,12 @@ class FireflyTransactions:
         self.push_url = firefly_url + _TRANSACTIONS_ENDPOINT
 
         self.list = []
-        for transaction in account_transactions:
-            if (self.currency is None or self.currency == transaction.get('currency')) and \
-                    (transaction.get('vault') is None or transaction.get('amount') < 0) and \
-                    transaction.get('state') != 'DECLINED':
+        for transaction in sorted(account_transactions, key=lambda k: k['createdDate']):
+            if (self.currency is None or self.currency == transaction.get('currency')) \
+                    and (transaction.get('vault') is None or transaction.get('amount') < 0) \
+                    and transaction.get('state') != 'DECLINED':
                 firefly_transaction = FireflyTransaction(
+                    leg_id=transaction.get('legId'),
                     transaction_type=transaction.get('type'),
                     date=transaction.get('createdDate'),
                     description=transaction.get('description'),
@@ -165,7 +163,7 @@ class FireflyTransactions:
         return len(self.list)
 
     def process(self):
-        last_trans_hash = FireflyTransaction.get_last_transaction_hash()
+        last_trans_leg_id = FireflyTransaction.get_last_transaction_leg_id()
         process_state = False
         last_transaction = None
         fresh_run_transaction = None
@@ -175,17 +173,17 @@ class FireflyTransactions:
                 payload = transaction.get_json(self.account_id, self.vault_id, self.topup_id, self.wallet_id)
                 self.push_transaction(payload)
                 last_transaction = transaction
-            elif transaction.get_hash() == last_trans_hash:
+            elif transaction.leg_id == last_trans_leg_id:
                 process_state = True
                 fresh_run_transaction = None
             else:
                 fresh_run_transaction = transaction
 
         if last_transaction is not None:
-            last_transaction.write_transaction_hash()
+            last_transaction.write_transaction_leg_id()
             return
         if fresh_run_transaction is not None:
-            fresh_run_transaction.write_transaction_hash()
+            fresh_run_transaction.write_transaction_leg_id()
 
     def push_transaction(self, payload):
         payload = {'transactions': [payload]}
