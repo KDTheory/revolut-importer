@@ -187,8 +187,8 @@ class FireflyTransactions:
 
     def push_transaction(self, payload):
         payload = {'transactions': [payload]}
-        # response = requests.post(self.push_url, headers=self.headers, json=payload).json()
-        print(payload)
+        response = requests.post(self.push_url, headers=self.headers, json=payload).json()
+        print(response)
 
 
 class FireflyRevolutClient(Revolut):
