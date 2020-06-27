@@ -163,7 +163,7 @@ class FireflyTransactions:
         return len(self.list)
 
     def process(self):
-        last_trans_leg_id = FireflyTransaction.get_last_transaction_leg_id()
+        last_trans_leg_id = FireflyTransaction.get_last_transaction_leg_id().strip()
         process_state = False
         last_transaction = None
         fresh_run_transaction = None
