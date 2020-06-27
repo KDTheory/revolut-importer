@@ -53,7 +53,7 @@ class FireflyTransaction:
     def extract_type(transaction_type, amount):
         if transaction_type == 'CARD_PAYMENT' or (transaction_type == 'EXCHANGE' and amount.get_real_amount() < 0):
             return 'withdrawal'
-        if (transaction_type == 'TRANSFER' or transaction_type == 'EXCHANGE') and amount.get_real_amount() > 0:
+        if (transaction_type == 'TRANSFER' or transaction_type == 'EXCHANGE' or transaction_type == 'CARD_REFUND') and amount.get_real_amount() > 0:
             return 'deposit'
         if transaction_type == 'TOPUP' or transaction_type == 'TRANSFER' or transaction_type == 'ATM':
             return 'transfer'
@@ -187,8 +187,8 @@ class FireflyTransactions:
 
     def push_transaction(self, payload):
         payload = {'transactions': [payload]}
-        response = requests.post(self.push_url, headers=self.headers, json=payload).json()
-        print(response)
+        # response = requests.post(self.push_url, headers=self.headers, json=payload).json()
+        print(payload)
 
 
 class FireflyRevolutClient(Revolut):
