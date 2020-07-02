@@ -1,3 +1,6 @@
+> :warning: **Not working**: Since Revolut changing it's authentication to more strict,
+> this is not working currently https://github.com/tducret/revolut-python/issues/17
+
 # FireflyRevolutTransactions
 
 Automatic import of Revolut transactions into FireflyIII personal finance manager, 
