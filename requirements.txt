@@ -1,4 +1,4 @@
 requests>=2.18.4
 Click>=7.0
-revolut>=0.1.2
+revolut>=0.1.4
 appdirs>=1.4.3
