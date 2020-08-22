@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import requests
 from appdirs import user_cache_dir
 from revolut import Amount, Revolut, _URL_GET_TRANSACTIONS_LAST
 
