@@ -3,13 +3,11 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import requests
 from appdirs import user_cache_dir
-from revolut import Amount, Revolut, _URL_GET_TRANSACTIONS
+from revolut import Amount, Revolut, _URL_GET_TRANSACTIONS_LAST
 
 _CACHE_FILE = 'last_transaction.txt'
 _CACHE_DIR = 'revolut'
-_CLI_DEVICE_ID = 'revolut_cli'
 _DATE_FORMAT = '%Y-%m-%d'
 
 _TRANSACTIONS_ENDPOINT = 'api/v1/transactions'
@@ -192,8 +190,8 @@ class FireflyTransactions:
 
 
 class FireflyRevolutClient(Revolut):
-    def __init__(self, revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id, wallet_id, currency):
-        super().__init__(token=revolut_token, device_id=_CLI_DEVICE_ID)
+    def __init__(self, device_id, revolut_token, firefly_token, account_id, firefly_url, vault_id, topup_id, wallet_id, currency):
+        super().__init__(token=revolut_token, device_id=device_id)
         self.firefly_token = firefly_token
         self.account_id = account_id
         self.vault_id = vault_id
@@ -204,7 +202,7 @@ class FireflyRevolutClient(Revolut):
 
     def get_account_transactions(self, from_date=(datetime.now() - timedelta(14))):
         from_date_ts = from_date.timestamp()
-        path = _URL_GET_TRANSACTIONS + '?from={from_date_ts}&walletId={wallet_id}'.format(
+        path = _URL_GET_TRANSACTIONS_LAST + '?from={from_date_ts}&walletId={wallet_id}'.format(
             from_date_ts=int(from_date_ts) * 1000,
             wallet_id=self.get_wallet_id()
         )
