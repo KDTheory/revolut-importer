@@ -10,9 +10,9 @@ from firefly_revolut_transactions import FireflyRevolutClient
 @click.command()
 @click.option(
     '--device-id', '-d',
-    envvar="REVOLUT_TOKEN",
+    envvar="REVOLUT_DEVICE_ID",
     type=str,
-    help='Revolut token (required)',
+    help='Revolut device id (required)',
 )
 @click.option(
     '--revolut-token', '-r',
