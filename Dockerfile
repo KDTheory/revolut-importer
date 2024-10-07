@@ -4,7 +4,7 @@ FROM python:3.9-slim
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers requis pour l'application
+# Copier le fichier des dépendances
 COPY requirements.txt .
 
 # Installer les dépendances
@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copier le reste de l'application
 COPY . .
 
+# Créer le fichier de configuration config.json
+RUN echo '{\n  "api_key": "${REVOLUT_API_KEY}"\n}' > config.json
+
 # Commande pour exécuter le script
-CMD ["python", "main.py"]  # Remplacez par le nom de votre script principal
+CMD ["python", "revolut_importer.py"]
