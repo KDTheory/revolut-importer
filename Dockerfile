@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Commande pour exécuter le script, en passant les variables d'environnement
-CMD ["sh", "-c", "python revolut_importer.py --firefly-url $FIREFLY_III_URL --access-token $FIREFLY_III_ACCESS_TOKEN --api-key $REVOLUT_API_KEY --account-id $REVOLUT_ACCOUNT_ID"]
+CMD ["sh", "-c", "python revolut_importer.py --firefly-url $FIREFLY_III_URL --firefly-token $TOKEN --revolut-token $REV_PASS --account-id $REVOLUT_ACCOUNT_ID --device-id $DEVICE_ID"]
