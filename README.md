@@ -1,3 +1,7 @@
+# /!\ DISCLAIMER /!\
+
+This code is not mine, this is a fork from https://gitlab.com/ludo444/fireflyrevoluttransactions, the intend of this repo is to have the code in docker
+
 # FireflyRevolutTransactions
 
 Automatic import of Revolut transactions into FireflyIII personal finance manager, 
